@@ -1,0 +1,111 @@
+	
+	- VMWare
+		- Virtualization (But is expensive, multiple kernels)
+			- Multiple OS Same Host
+			- More Efficient
+			- Multi apps same host
+
+		Hypervisors allow multiple apps per server.
+
+		A container is launched by running an image. An image is an executable package that includes everything needed to run an application - the code, a runtime, libraries, environment variables, and configuration files. An image runs within the container and is built using layers.
+
+		Your software is added to an image, after which other people from your development team can build on top of it to expand it and add other functionality.
+
+		Docker is an open source application that automates application development in a container. With Docker, developers only take care of applications that are launched into a container, rather than container management itself.
+
+		On the same line, Docker introduces us with the phrase "PODA" - Package once, deploy anywhere.
+
+		It’s important to note that Docker containers don’t run in their own virtual machines, but share a Linux kernel. Compared to virtual machines, containers use less memory and less CPU.
+
+      For Reference : 
+
+		https://www.dropbox.com/s/zzakrojlld6wdgh/Screenshot%202019-07-04%2015.45.04.png?dl=0
+
+		https://www.dropbox.com/s/r2p5m83duwbs96b/Screenshot%202019-07-04%2015.46.23.png?dl=0
+
+
+
+
+
+
+	- Docker (Containers)
+		- Lightweight
+		- Portable - Small images
+		- Fast
+		- No Hypervisor : no seperate kernel
+		- Docker Daemon
+
+
+
+STEPS to Follow : 
+
+	#1 - mvn spring-boot:run from project root (Optional)
+
+	#2 - In pom.xml add:
+
+		<profiles>  
+   <profile>
+      <activation>
+         <property>
+            <name>docker</name>
+         </property>
+      </activation>
+      <build>
+         <plugins>
+            <plugin>
+               <groupId>io.fabric8</groupId>
+               <artifactId>docker-maven-plugin</artifactId>
+               <version>0.26.0</version>
+               <extensions>true</extensions>
+               <configuration>
+                  <verbose>true</verbose>
+                  <images>
+                     <image>
+                        <name>${project.artifactId}</name>
+                        <build>
+                           <from>java:8-jdk-alpine</from>
+                           <entryPoint>
+                              <exec>
+                                 <args>java</args>
+                                 <args>-jar</args>
+                                 <args>/maven/${project.artifactId}-${project.version}.jar</args>
+                              </exec>
+                           </entryPoint>
+                           <assembly>
+                              <descriptorRef>artifact</descriptorRef>
+                           </assembly>
+                        </build>
+                     </image>
+                  </images>
+               </configuration>
+               <executions>
+                  <execution>
+                     <id>build</id>
+                     <phase>post-integration-test</phase>
+                     <goals>
+                        <goal>build</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+         </plugins>
+      </build>
+   </profile>
+</profiles>  
+
+(Start docker)
+#3 build the image:
+	- mvn clean install -Ddocker 
+#4 check our image:
+	- docker images
+#5 run the image:
+	- docker run -p 8090:8080 boot-docker-ex 
+#6 Check the rest point on browser
+	- http://localhost:8090/greet/Shivani (Change this for your URL)
+#7 check what containers are running using:
+	- docker ps
+
+
+(Optional)
+?#8 Now, if the port is already in use, you can either change the port or remove the old container using:
+	- docker rm -f <container-id>
