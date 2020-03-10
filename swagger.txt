@@ -1,0 +1,56 @@
+// @author: Waleed Q
+// @created: 10/03/2020
+// @subject: Using Swagger
+
+	<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+	</dependency>	
+
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
+
+
+	localhost:8080/v2/api-docs
+
+	http://localhost:8080/swagger-ui.html
+
+
+@EnableSwagger2
+
+    @Bean
+    Docket configSwagger() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .paths(PathSelectors.ant("/app/**"))
+                .apis(RequestHandlerSelectors.basePackage("com.w"))
+                .build()
+
+                .apiInfo(new ApiInfo("User's API",
+                        "Our Test API for learning",
+                        "1.0.0",
+                        "Learning is fun, so lets keep it free",
+                        new Contact("WQ", "www.iacsoftware.com", "contact@iacsoftware.com"), 
+                        "Standard API License", 
+                        "www.iacsoftware.com",
+                        Collections.emptyList()));
+    }
+
+
+    - On rest methods
+        - @ApiOperation(value = "Find all users by id",
+                notes = "Hit this api for fetching all users from the database by specifying an id",
+                response = User.class
+                )
+
+    - On the class
+        - @Api(value = "User REST API", description = "Information about company users")
+
+    - On the model class
+        - @ApiModel
+        - methods
+            - @ApiModelProperty(notes = "id of the user")
